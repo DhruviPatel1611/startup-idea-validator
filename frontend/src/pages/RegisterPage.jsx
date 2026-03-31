@@ -35,7 +35,7 @@ export default function RegisterPage() {
       <div className={styles.card}>
         <div className={styles.logo}>
           <div className={styles.logoIcon}>🔮</div>
-          <div className={styles.logoText}>Idea<span>Forge</span></div>
+          <div className={styles.logoText}>Startup<span> Idea Validator</span></div>
         </div>
         <h1 className={styles.heading}>Create account</h1>
         <p className={styles.sub}>Start validating your startup ideas today</p>
