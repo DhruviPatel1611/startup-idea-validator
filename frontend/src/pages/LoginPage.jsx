@@ -39,7 +39,7 @@ export default function LoginPage() {
       <div className={styles.card}>
         <div className={styles.logo}>
           <div className={styles.logoIcon}>🔮</div>
-          <div className={styles.logoText}>Idea<span>Forge</span></div>
+          <div className={styles.logoText}>Startup<span> Idea Validator</span></div>
         </div>
         <h1 className={styles.heading}>Welcome back</h1>
         <p className={styles.sub}>Sign in to validate your next big idea</p>
