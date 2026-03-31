@@ -1,6 +1,6 @@
 import psycopg2
 
-conn = psycopg2.connect("postgresql://neondb_owner:npg_7qkceWPO6udX@ep-sparkling-mode-an479a6r-pooler.c-6.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
+conn = psycopg2.connect("")
 
 cursor = conn.cursor()
 

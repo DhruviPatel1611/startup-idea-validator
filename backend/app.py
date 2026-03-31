@@ -10,10 +10,21 @@ import bcrypt
 import jwt
 from datetime import datetime, timedelta
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # load .env file
 
 app = Flask(__name__)
 CORS(app)
-SECRET_KEY = "mysecretkey"
+
+SECRET_KEY = os.getenv("SECRET_KEY","fallback_secret")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+# DB connection fun
+def get_connection():
+    return psycopg2.connect(DATABASE_URL)
+
 
 # Load Model(best.pkl)
 data = joblib.load("best.pkl")
@@ -24,9 +35,6 @@ le1 = data["ms_encoder"]
 le2 = data["tc_encoder"]
 le3 = data["fs_encoder"]
 
-# connect neon database
-conn = psycopg2.connect("postgresql://neondb_owner:npg_7qkceWPO6udX@ep-sparkling-mode-an479a6r-pooler.c-6.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
-# cursor = conn.cursor()
 
 # Home route
 @app.route("/")
@@ -55,16 +63,18 @@ def suggest_team(tc):
         return "4-6 members"
     else:
         return "6-10 members"
-    
+
+
 # API predict route
 @app.route("/predict",methods=["POST"])
 def predict():
 
-      # 👇 ADD THIS PART HERE
+      #  ADD THIS PART HERE
     if request.method == "GET":
         return "Use POST request with JSON (Postman)"
 
     try:
+        conn = get_connection()
         cursor = conn.cursor()
         # GET Token
         token = request.headers.get("Authorization")
@@ -119,6 +129,9 @@ def predict():
         cursor.execute(query, values)
         conn.commit()
 
+        cursor.close()
+        conn.close()
+
         # response
         return jsonify({
             "risk":risk,
@@ -134,6 +147,7 @@ def predict():
 @app.route("/register",methods=["POST"])
 def register():
     try:
+        conn = get_connection()
         cursor = conn.cursor()
         data = request.json
 
@@ -147,7 +161,10 @@ def register():
         query = "INSERT INTO users (name, email, password) VALUES (%s,%s,%s)"
         cursor.execute(query,(name, email, hashed_pw))
         conn.commit()
-        
+
+        cursor.close()
+        conn.close()
+
         return jsonify({"message" : "User registered successfully"})
     except Exception as e:
         return jsonify({"error" : str(e)})
@@ -157,6 +174,7 @@ def register():
 @app.route("/protected", methods=["GET"])
 def protected():
     try:
+        conn = get_connection()
         cursor = conn.cursor()
         token = request.headers.get("Authorization")
 
@@ -164,6 +182,9 @@ def protected():
             return jsonify({"error": "Token missing"})
 
         decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+
+        cursor.close()
+        conn.close()
 
         return jsonify({"message": "Access granted", "user": decoded})
 
@@ -174,8 +195,7 @@ def protected():
 @app.route("/login",methods=["POST"])
 def login():
     try:
-        conn = psycopg2.connect("postgresql://neondb_owner:npg_7qkceWPO6udX@ep-sparkling-mode-an479a6r-pooler.c-6.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
-
+        conn = get_connection()
         cursor = conn.cursor()
 
         data = request.json
@@ -198,6 +218,9 @@ def login():
                 "exp":datetime.utcnow() + timedelta(hours=2)
             }, SECRET_KEY,algorithm="HS256")
 
+            cursor.close()
+            conn.close()
+
             return jsonify({"token": token})
         
         else:
@@ -211,6 +234,7 @@ def login():
 @app.route("/history",methods=["GET"])
 def history():
     try:
+        conn = get_connection()
         cursor = conn.cursor()
         # GET token
         token = request.headers.get("Authorization")
@@ -242,6 +266,9 @@ def history():
                 "confidence":float(row[3]),
                 "created_at":str(row[4])
             })
+
+        cursor.close()
+        conn.close()
         
         return jsonify(result)
     except Exception as e:
@@ -251,6 +278,7 @@ def history():
 @app.route("/user", methods=["GET"])
 def get_user():
     try:
+        conn = get_connection()
         cursor = conn.cursor()
         # GET TOKEN
         token = request.headers.get("Authorization")
@@ -278,4 +306,5 @@ def get_user():
     
 # run app
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT",5000))
+    app.run(host="0.0.0.0",port=port)
