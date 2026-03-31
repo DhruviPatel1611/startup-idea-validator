@@ -1,0 +1,53 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  margin-left: 230px;
+  flex: 1;
+  padding: 2.5rem;
+  min-height: 100vh;
+  max-width: calc(100vw - 230px);
+  position: relative;
+  z-index: 1;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}
+
+.mobileToggle {
+  display: none;
+  position: fixed;
+  top: 1rem; left: 1rem;
+  z-index: 200;
+  width: 36px; height: 36px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+}
+
+.mobileToggle span {
+  display: block;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .main { margin-left: 0; max-width: 100%; padding: 1.5rem; padding-top: 4rem; }
+  .overlay { display: block; }
+  .mobileToggle { display: flex; }
+}

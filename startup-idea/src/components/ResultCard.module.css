@@ -1,0 +1,226 @@
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  animation: fadeUp 0.4s ease 0.1s both;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.3rem;
+}
+
+.title {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.status {
+  font-size: 0.78rem;
+  color: var(--text3);
+}
+
+/* Placeholder */
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 340px;
+  gap: 1rem;
+  color: var(--text3);
+}
+
+.placeholderIcon {
+  width: 64px; height: 64px;
+  background: var(--bg3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+  border: 1px solid var(--border);
+}
+
+.placeholder p {
+  font-size: 0.9rem;
+  text-align: center;
+  max-width: 200px;
+  line-height: 1.5;
+}
+
+/* Loader */
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem;
+  min-height: 340px;
+}
+
+.loader p {
+  color: var(--text2);
+  font-size: 0.88rem;
+}
+
+/* Result body */
+.resultBody {
+  animation: fadeUp 0.4s ease;
+}
+
+/* Risk badge */
+.riskBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.riskLow { background: var(--emerald-dim); color: var(--emerald); border: 1px solid rgba(16,217,160,0.2); }
+.riskMedium { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,166,35,0.2); }
+.riskHigh { background: var(--rose-dim); color: var(--rose); border: 1px solid rgba(255,92,122,0.2); }
+
+.metaLine {
+  font-size: 0.82rem;
+  color: var(--text3);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+/* Progress */
+.progressWrap { margin: 1.2rem 0; }
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--text2);
+  font-weight: 500;
+}
+
+.confValue { color: var(--accent2); font-weight: 600; }
+
+.progressBar {
+  height: 6px;
+  background: var(--bg3);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Metrics */
+.metricRow {
+  display: grid;
+  /* grid-template-columns: 1fr 1fr; */
+  gap: 20px;
+  /* margin: 1.2rem 0; */
+}
+
+.metric {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.metricLabel {
+  font-size: 0.75rem;
+  color: var(--text3);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.metricValue {
+  font-family: var(--font-head);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.metricUnit {
+  font-size: 0.9rem;
+  color: var(--text3);
+}
+
+/* Insight */
+.insightBox {
+  background: linear-gradient(135deg, rgba(108,99,255,0.06), rgba(138,128,255,0.03));
+  border: 1px solid rgba(108,99,255,0.15);
+  border-radius: 10px;
+  padding: 1.5rem 1.1rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text2);
+  margin: 1rem 0;
+}
+
+/* Team */
+.teamSection { margin-top: 1.2rem; }
+
+.teamLabel {
+  font-size: 0.75rem;
+  color: var(--text3);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+.teamRow {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.teamAvatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin-left: -8px;
+}
+
+.teamAvatar:first-child { margin-left: 0; }
+
+.teamExtra {
+  background: var(--bg3) !important;
+  color: var(--text2);
+  font-size: 0.7rem;
+}
+
+.teamMeta {
+  font-size: 0.8rem;
+  color: var(--text2);
+  margin-top: 0.5rem;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .metricRow { grid-template-columns: 1fr; }
+}

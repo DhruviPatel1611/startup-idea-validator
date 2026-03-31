@@ -1,0 +1,67 @@
+.row td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+  transition: var(--transition);
+}
+
+.row:hover td { background: rgba(255,255,255,0.03); }
+.row:last-child td { border-bottom: none; }
+
+.ideaTitle { font-weight: 500; color: var(--text); }
+.ideaSector { font-size: 0.77rem; color: var(--text3); margin-top: 0.2rem; }
+
+.riskPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.dot { width: 6px; height: 6px; border-radius: 50%; }
+
+.riskLow { background: var(--emerald-dim); color: var(--emerald); border: 1px solid rgba(16,217,160,0.2); }
+.riskMedium { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,166,35,0.2); }
+.riskHigh { background: var(--rose-dim); color: var(--rose); border: 1px solid rgba(255,92,122,0.2); }
+
+.dotGreen { background: var(--emerald); }
+.dotYellow { background: var(--amber); }
+.dotRed { background: var(--rose); }
+
+.confRow { display: flex; align-items: center; gap: 0.5rem; }
+
+.confBarWrap {
+  width: 80px; height: 4px;
+  background: var(--bg3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.confBarFill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+
+.confPct { font-size: 0.82rem; color: var(--text2); font-weight: 500; }
+
+.dateCell { color: var(--text3); font-size: 0.82rem; }
+
+.actionBtn {
+  padding: 0.3rem 0.65rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: var(--text2);
+  transition: var(--transition);
+  font-family: var(--font-body);
+}
+.actionBtn:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+
+.empty { text-align: center; padding: 3rem; color: var(--text3); }
