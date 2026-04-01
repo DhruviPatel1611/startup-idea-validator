@@ -47,13 +47,21 @@ export default function LoginPage() {
       });
 
       console.log("FULL RESPONSE:", res.data);
+
+      // ✅ Validation (IMPORTANT)
+      if (!res.data || !res.data.token) {
+        showToast("error", "Invalid email or password");
+        return;
+      }
+
+      // ✅ Only valid login reaches here
       localStorage.setItem("token", res.data.token);
 
       showToast("success", "Login successful!");
       navigate("dashboard");
     } catch (err) {
       console.log(err.response?.data);
-      showToast("error", "Login failed");
+      showToast("error", err.response?.data?.message || "Invalid credentials");
     } finally {
       setLoading(false);
     }
