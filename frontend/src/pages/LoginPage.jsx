@@ -8,32 +8,56 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const isvalidEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
 
   const handleLogin = async () => {
-  try {
-    setLoading(true);
+    // Check empty fields
+    if (!email || !password) {
+      showToast("error", "Please fill all fields");
+      return;
+    }
 
-    const res = await API.post("/login", {
-      email,
-      password
-    });
+    // Check valid email format
+    if (!isvalidEmail(email)) {
+      showToast("error", "Invalid email format");
+      return;
+    }
 
-    console.log("FULL RESPONSE:", res.data); // 👈 ADD THIS
-    const token = res.data.token;
-    // localStorage.setItem("token", res.data.data);
-    localStorage.setItem("token", res.data.token);
+    // Optional: block obvious dummy emails
+    const blockedWords = ["test", "dummy", "abc", "example"];
+    const isDummy = blockedWords.some((word) =>
+      email.toLowerCase().includes(word),
+    );
 
-    showToast('success', 'Login successful!');
-    navigate('dashboard');
+    if (isDummy) {
+      showToast("error", "Invalid or dummy email not allowed");
+      return;
+    }
 
-  } catch (err) {
-    console.log(err.response?.data);
-    showToast('error', "Login failed");
-  } finally {
-    setLoading(false);
-  }
-};
+    // Your original code continues (NO CHANGE)
+    try {
+      setLoading(true);
 
+      const res = await API.post("/login", {
+        email,
+        password,
+      });
+
+      console.log("FULL RESPONSE:", res.data);
+      localStorage.setItem("token", res.data.token);
+
+      showToast("success", "Login successful!");
+      navigate("dashboard");
+    } catch (err) {
+      console.log(err.response?.data);
+      showToast("error", "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className={styles.wrap}>
       <div className={styles.card}>
