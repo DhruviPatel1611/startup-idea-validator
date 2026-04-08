@@ -1,0 +1,26 @@
+.header {
+  margin-bottom: 2rem;
+}
+
+.pageTitle {
+  font-family: var(--font-head);
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.3rem;
+}
+
+.pageSub {
+  color: var(--text2);
+  font-size: 0.9rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+}
