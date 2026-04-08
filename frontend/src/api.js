@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const API = axios.create({
-    baseURL : "https://startup-idea-validator-btnv.onrender.com/",
+    baseURL : "https://startup-idea-validator-pke2.onrender.com/",
 })
 
 // Attach token automatically
