@@ -135,19 +135,18 @@
 //   );
 // }
 
-
-import { useEffect, useState } from 'react';
-import AppLayout from '../components/AppLayout';
-import HistoryTable from '../components/HistoryTable';
-import { useApp } from '../context/AppContext';
-import API from '../api';
-import styles from './HistoryPage.module.css';
+import { useEffect, useState } from "react";
+import AppLayout from "../components/AppLayout";
+import HistoryTable from "../components/HistoryTable";
+import { useApp } from "../context/AppContext";
+import API from "../api";
+import styles from "./HistoryPage.module.css";
 
 export default function HistoryPage() {
   const { showToast } = useApp();
 
   const [history, setHistory] = useState([]);
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState("all");
 
   // ✅ FETCH FROM BACKEND
   useEffect(() => {
@@ -157,61 +156,48 @@ export default function HistoryPage() {
 
         console.log("HISTORY RESPONSE:", res.data);
 
-        // ✅ SAFE TRANSFORM
         const formatted = Array.isArray(res.data)
           ? res.data.map((item, index) => ({
               id: index + 1,
               title: item.idea || "N/A",
               sector: item.sector || "N/A",
+              competitors: item.competitors || "N/A",
 
-              // 🔥 FIXED risk handling (trim + lowercase)
               risk: item.risk
                 ? item.risk.toString().trim().toLowerCase()
                 : "unknown",
 
-              // 🔥 SAFE confidence
-              conf: item.confidence
-                ? Math.round(item.confidence * 100)
-                : 0,
+              conf: item.confidence ? Math.round(item.confidence * 100) : 0,
 
-              // 🔥 SAFE date
               date: item.created_at
                 ? new Date(item.created_at).toLocaleDateString()
                 : "N/A",
-
-              competitors: item.competitors || "N/A"
             }))
           : [];
 
         setHistory(formatted);
-
       } catch (err) {
         console.log("ERROR:", err.response?.data || err.message);
-        showToast('error', 'Failed to load history');
+        showToast("error", "Failed to load history");
       }
     };
 
     fetchHistory();
   }, []);
 
-  // ✅ FIXED FILTER
+  // FILTER
   const filtered =
-    filter === 'all'
+    filter === "all"
       ? history
-      : history.filter((i) =>
-          i.risk && i.risk.toLowerCase() === filter
-        );
+      : history.filter((i) => i.risk && i.risk.toLowerCase() === filter);
 
-  // ✅ STATS
+  // STATS
   const totalCount = history.length;
-
-  const lowCount = history.filter((i) => i.risk === 'low').length;
+  const lowCount = history.filter((i) => i.risk === "low").length;
 
   const avgConf =
     history.length > 0
-      ? Math.round(
-          history.reduce((a, b) => a + b.conf, 0) / history.length
-        )
+      ? Math.round(history.reduce((a, b) => a + b.conf, 0) / history.length)
       : 0;
 
   return (
@@ -226,42 +212,24 @@ export default function HistoryPage() {
       {/* Stats */}
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
-          <div
-            className={styles.statBar}
-            style={{ background: 'linear-gradient(90deg, var(--accent), transparent)' }}
-          />
           <div className={styles.statLabel}>Total Analyses</div>
           <div className={`${styles.statValue} ${styles.accent}`}>
             {totalCount}
           </div>
-          <div className={styles.statSub}>Live data</div>
         </div>
 
         <div className={styles.statCard}>
-          <div
-            className={styles.statBar}
-            style={{ background: 'linear-gradient(90deg, var(--emerald), transparent)' }}
-          />
           <div className={styles.statLabel}>Low Risk</div>
           <div className={`${styles.statValue} ${styles.green}`}>
             {lowCount}
           </div>
-          <div className={styles.statSub}>
-            {totalCount
-              ? Math.round((lowCount / totalCount) * 100)
-              : 0}% of total
-          </div>
         </div>
 
         <div className={styles.statCard}>
-          <div
-            className={styles.statBar}
-            style={{ background: 'linear-gradient(90deg, var(--amber), transparent)' }}
-          />
           <div className={`${styles.statValue} ${styles.amber}`}>
             {avgConf}%
           </div>
-          <div className={styles.statSub}>Across all ideas</div>
+          <div className={styles.statSub}>Avg Confidence</div>
         </div>
       </div>
 
@@ -272,15 +240,15 @@ export default function HistoryPage() {
 
           <div className={styles.filterGroup}>
             {[
-              { key: 'all', label: 'All' },
-              { key: 'low', label: 'Low Risk' },
-              { key: 'medium', label: 'Medium Risk' },
-              { key: 'high', label: 'High Risk' },
+              { key: "all", label: "All" },
+              { key: "low", label: "Low Risk" },
+              { key: "medium", label: "Medium Risk" },
+              { key: "high", label: "High Risk" },
             ].map(({ key, label }) => (
               <button
                 key={key}
                 className={`${styles.filterBtn} ${
-                  filter === key ? styles.filterActive : ''
+                  filter === key ? styles.filterActive : ""
                 }`}
                 onClick={() => setFilter(key)}
               >
@@ -290,7 +258,6 @@ export default function HistoryPage() {
           </div>
         </div>
 
-        {/* ✅ EMPTY STATE */}
         {filtered.length === 0 ? (
           <p style={{ textAlign: "center", padding: "20px" }}>
             No history found
@@ -301,13 +268,13 @@ export default function HistoryPage() {
               <thead>
                 <tr>
                   <th>Idea</th>
+                  <th>Sector</th>
+                  <th>Competitors</th>
                   <th>Risk Level</th>
                   <th>Confidence</th>
                   <th>Date</th>
-                  <th></th>
                 </tr>
               </thead>
-
               <tbody>
                 <HistoryTable data={filtered} />
               </tbody>

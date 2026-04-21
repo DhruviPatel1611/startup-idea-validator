@@ -124,3 +124,25 @@
 @media (max-width: 768px) {
   .statsRow { grid-template-columns: 1fr; }
 }
+/* TABLE FIX */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* HEADER LINE */
+.table thead tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ROW SEPARATOR */
+.table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* OPTIONAL: spacing */
+.table td,
+.table th {
+  padding: 12px 10px;
+  text-align: left;
+}
