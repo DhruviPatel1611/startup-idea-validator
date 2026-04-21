@@ -25,7 +25,6 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 def get_connection():
     return psycopg2.connect(DATABASE_URL)
 
-
 # Load Model(best.pkl)
 data = joblib.load("best.pkl")
 model = data["model"]
@@ -34,7 +33,7 @@ le = data["label_encoder"]
 le1 = data["ms_encoder"]
 le2 = data["tc_encoder"]
 le3 = data["fs_encoder"]
-
+le4 = data["comp_encoder"]
 
 # Home route
 @app.route("/")
@@ -64,6 +63,25 @@ def suggest_team(tc):
     else:
         return "6-10 members"
 
+def competitors_count(comp):
+    if comp == "Low":
+        return "1-3 competitors"
+    elif comp == "Medium":
+        return "4-7 competitors"
+    elif comp == "Many":
+        return "8+ competitors"
+    else:
+        return "Unknown"
+
+def competitors_to_number(comp):
+    if comp == "Low":
+        return 2
+    elif comp == "Medium":
+        return 5
+    elif comp == "Many":
+        return 10
+    else:
+        return 0
 
 # API predict route
 @app.route("/predict",methods=["POST"])
@@ -89,19 +107,34 @@ def predict():
 
         idea = data_input["idea"]
         sector = data_input["sector"]
-        ms = data_input["market_saturation"]
-        tc = data_input["tech_complexity"]
-        fs = data_input["funding_stage"]
+        ms = str(data_input["market_saturation"]).strip().title()
+        tc = str(data_input["tech_complexity"]).strip().title()
+        fs = str(data_input["funding_stage"]).strip().title()
+        # comp = str(data_input["competitors"]).strip().title()
+
+        if ms == "High":
+            comp = "Many"
+        elif ms == "Medium":
+            comp = "Medium"
+        else:
+            comp = "Low"
 
         # preprocess
         text = clean_text(idea + " " + sector)
         X_text = vectorizer.transform([text])
 
-        ms_enc = le1.transform([ms])
-        tc_enc = le2.transform([tc])
-        fs_enc = le3.transform([fs])
+        def safe_transform(value, encoder):
+            if value in encoder.classes_:
+                return encoder.transform([value])[0]
+            else:
+                return 0
+    
+        ms_enc = safe_transform(ms,le1)
+        tc_enc = safe_transform(tc, le2)
+        fs_enc = safe_transform(fs, le3)
+        comp_enc = safe_transform(comp, le4)
 
-        X_final = sp.hstack([X_text, [[ms_enc[0],tc_enc[0],fs_enc[0]]]])
+        X_final = sp.hstack([X_text, [[ms_enc,tc_enc,fs_enc,comp_enc]]])
 
         # prediction
         pred = model.predict(X_final)
@@ -116,13 +149,15 @@ def predict():
         # Insert into db
         query = """
         INSERT INTO startup_idea
-        (user_id,idea, sector, market_saturation, tech_complexity, funding_stage, risk, confidence, message, team_size)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        (user_id,idea, sector, market_saturation, tech_complexity, funding_stage, competitors, risk, confidence, message, team_size)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
         """
 
+        comp_num = competitors_to_number(comp)
+        
         values = (
             user_id,
-            idea, sector, ms, tc, fs,
+            idea, sector, ms, tc, fs,comp_num,
             risk, confidence, message, team
         )
 
@@ -134,6 +169,13 @@ def predict():
 
         # response
         return jsonify({
+            "idea":idea,
+            "sector":sector,
+            "market_saturation":ms,
+            "tech_complexity":tc,
+            "funding_complexity":fs,
+            "competitors":comp,
+            "competitors_range": competitors_count(comp),
             "risk":risk,
             "confidence":round(confidence,2),
             "message":message,
@@ -246,7 +288,7 @@ def history():
 
         # Fetch user data
         query = """
-        SELECT idea, sector, risk, confidence, created_at
+        SELECT idea, sector, competitors, risk, confidence, created_at
         FROM startup_idea
         WHERE user_id = %s
         ORDER BY created_at DESC
@@ -262,9 +304,10 @@ def history():
             result.append({
                 "idea":row[0],
                 "sector":row[1],
-                "risk":row[2],
-                "confidence":float(row[3]),
-                "created_at":str(row[4])
+                "competitors":row[2],
+                "risk":row[3],
+                "confidence":float(row[4]),
+                "created_at":str(row[5])
             })
 
         cursor.close()
@@ -272,7 +315,7 @@ def history():
         
         return jsonify(result)
     except Exception as e:
-        return jsonify({"reeoe": str(e)})
+        return jsonify({"error": str(e)})
 
 # USER API CODE
 @app.route("/user", methods=["GET"])
