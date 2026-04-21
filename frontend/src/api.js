@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const API = axios.create({
-    baseURL : "https://startup-idea-validator-pke2.onrender.com/ ",
+    baseURL : "https://startup-idea-validator-pke2.onrender.com/",
     // baseURL : "http://127.0.0.1:5000/",
 })
 
